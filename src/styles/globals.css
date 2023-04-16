@@ -1,0 +1,21 @@
+.prompt-container p span {
+  margin: 4px;
+}
+.prompt-container p {
+  font-size: 1.4em;
+}
+
+.inputBox {
+  /* display: inline; */
+  border: solid 1px grey;
+  background-color: rgb(236, 236, 236);
+  padding: 2px 10px;
+  border-radius: 4px;
+  line-break: normal;
+  word-wrap: break-word;
+  box-decoration-break: clone;
+}
+
+.wrap-anywhere {
+  overflow-wrap: anywhere;
+}

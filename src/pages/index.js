@@ -1,14 +1,13 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Col, Container, Row } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import parse from "html-react-parser";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [generatedText, setGeneratedText] = useState("Testing");
+  const [generatedText, setGeneratedText] = useState([]);
 
   async function callOpenAIGPT4(prompt) {
     let openAIResponse = await fetch("/api/openAIGPT4", {
@@ -25,8 +24,34 @@ export default function Home() {
       body: prompt,
     });
     let openAIResponseData = await openAIResponse.json();
-    setGeneratedText(openAIResponseData.data);
+    setGeneratedText([
+      ...generatedText,
+      {
+        prompt: prompt,
+        generatedContent: openAIResponseData,
+      },
+    ]);
   }
+
+  useEffect(() => {
+    console.log(generatedText);
+  }, [generatedText]);
+
+  function getChildrenValue() {
+    const myElement = document.getElementById("promptText");
+    let prompt = "";
+    for (const child of myElement.children) {
+      if (child.innerText != "") {
+        prompt += child.innerText + " ";
+      } else {
+        alert("Not all boxes are filled");
+        return;
+      }
+    }
+    console.log(prompt);
+    callOpenAIGPT(prompt);
+  }
+
   return (
     <>
       <Head>
@@ -36,24 +61,100 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Container>
-          <Row className="text-center mt-4">
-            <Col>
+        <div className="container-fluid">
+          <div className="row text-center mt-4">
+            <div className="col bg-light">
               <h2>Craft Prompt</h2>
+              <div
+                id="promptContainer"
+                className="d-flex flex-wrap prompt-container"
+              >
+                <p id="promptText" className="wrap-anywhere">
+                  <FixedText text="In"></FixedText>
+                  <VariableText hint="quantifier"></VariableText>
+                  <FixedText text="than"></FixedText>
+                  <VariableText hint="number"></VariableText>
+                  <FixedText text="words, write a"></FixedText>
+                  <VariableText hint="text"></VariableText>
+                  <FixedText text="to"></FixedText>
+                  <VariableText hint="who"></VariableText>
+                  <FixedText text="about"></FixedText>
+                  <VariableText hint="issue"></VariableText>
+                  <FixedText text="in the voice of"></FixedText>
+                  <VariableText hint="who"></VariableText>
+                </p>
+              </div>
               <button
+                className="btn btn-primary"
                 onClick={() => {
-                  callOpenAIGPT("Tell me about IPL");
+                  getChildrenValue();
                 }}
               >
-                Testing 2
+                Generate
               </button>
-            </Col>
-            <Col>
-              <p>{generatedText}</p>
-            </Col>
-          </Row>
-        </Container>
+            </div>
+            <div className="col">
+              <GeneratedContent
+                generatedText={generatedText}
+              ></GeneratedContent>
+            </div>
+          </div>
+        </div>
       </main>
     </>
   );
 }
+
+const FixedText = (props) => {
+  return (
+    <>
+      <span>{props.text}</span>
+    </>
+  );
+};
+
+const VariableText = (props) => {
+  return (
+    <>
+      <span
+        id="textBox"
+        className="inputBox"
+        type="textbox"
+        style={{ minWidth: "100px", display: "inline-block" }}
+        contentEditable
+        onInput={(e) => {
+          let minWidth = e.target.style.minWidth.slice(0, -2) * 1;
+          let offsetWidth = e.target.offsetWidth;
+          if (offsetWidth > minWidth) {
+            e.target.style.display = null;
+            e.target.style.lineHeight = "2em";
+          } else if (offsetWidth < minWidth) {
+            e.target.style.display = "inline-block";
+            e.target.style.lineHeight = null;
+          }
+        }}
+      ></span>
+    </>
+  );
+};
+
+const GeneratedContent = (props) => {
+  console.log(props.generatedText);
+  return (
+    <div>
+      {props.generatedText
+        .slice(0)
+        .reverse()
+        .map((item) => {
+          return (
+            <div>
+              {console.log(item.generatedContent.data)}
+              <strong>{item.prompt}</strong>
+              <p>{parse(item.generatedContent.data.replace(/\n/g, "<br>"))}</p>
+              <hr />
+            </div>
+          );
+        })}
+    </div>
+  );
+};

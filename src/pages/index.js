@@ -10,22 +10,13 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const [generatedText, setGeneratedText] = useState([]);
 
-  async function callOpenAIGPT4(prompt) {
-    let openAIResponse = await fetch("/api/openAIGPT4", {
-      method: "POST",
-      body: prompt,
-    });
-    let openAIResponseData = await openAIResponse.json();
-    console.log(openAIResponseData.data.content);
-  }
-
   async function callOpenAIGPT(prompt) {
     let openAIResponse = await fetch("/api/openAI", {
       method: "POST",
       body: prompt,
     });
     let openAIResponseData = await openAIResponse.json();
-    setGeneratedText([
+    setGeneratedText((generatedText) => [
       ...generatedText,
       {
         prompt: prompt,
@@ -35,14 +26,12 @@ export default function Home() {
   }
 
   useEffect(() => {
-    setGeneratedText(
-      JSON.parse(localStorage.getItem("craftResponses")) != undefined &&
-        JSON.parse(localStorage.getItem("craftResponses"))
-    );
+    console.log(localStorage.getItem("craftResponses"));
+    JSON.parse(localStorage.getItem("craftResponses")) != null &&
+      setGeneratedText(JSON.parse(localStorage.getItem("craftResponses")));
   }, []);
 
   useEffect(() => {
-    console.log(generatedText);
     if (generatedText.length > 0) {
       localStorage.setItem("craftResponses", JSON.stringify(generatedText));
     }
@@ -59,7 +48,6 @@ export default function Home() {
         return;
       }
     }
-    console.log(prompt);
     callOpenAIGPT(prompt);
   }
 
@@ -101,16 +89,27 @@ export default function Home() {
                   getChildrenValue();
                 }}
               >
-                Generate
+                Generate With AI
               </button>
             </div>
             <div className="col">
-              <a className="btn btn-primary" href="compare">
-                Compare & Reflect
-              </a>
-              <GeneratedContent
-                generatedText={generatedText}
-              ></GeneratedContent>
+              {generatedText.length > 0 ? (
+                <>
+                  {generatedText.length > 2 && (
+                    <a className="btn btn-primary" href="compare">
+                      Compare & Reflect
+                    </a>
+                  )}
+
+                  <GeneratedContent
+                    generatedText={generatedText}
+                  ></GeneratedContent>
+                </>
+              ) : (
+                <>
+                  <p>Craft your prompt to generate response from AI.</p>
+                </>
+              )}
             </div>
           </div>
         </div>

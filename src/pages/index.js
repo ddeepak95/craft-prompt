@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
 import parse from "html-react-parser";
+import ReactDiffViewer, { DiffMethod } from "react-diff-viewer-continued";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +35,17 @@ export default function Home() {
   }
 
   useEffect(() => {
+    setGeneratedText(
+      JSON.parse(localStorage.getItem("craftResponses")) != undefined &&
+        JSON.parse(localStorage.getItem("craftResponses"))
+    );
+  }, []);
+
+  useEffect(() => {
     console.log(generatedText);
+    if (generatedText.length > 0) {
+      localStorage.setItem("craftResponses", JSON.stringify(generatedText));
+    }
   }, [generatedText]);
 
   function getChildrenValue() {
@@ -62,8 +73,8 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className="container-fluid">
-          <div className="row text-center mt-4">
-            <div className="col bg-light">
+          <div className="row mt-4">
+            <div className="col text-center bg-light">
               <h2>Craft Prompt</h2>
               <div
                 id="promptContainer"
@@ -94,6 +105,9 @@ export default function Home() {
               </button>
             </div>
             <div className="col">
+              <a className="btn btn-primary" href="compare">
+                Compare & Reflect
+              </a>
               <GeneratedContent
                 generatedText={generatedText}
               ></GeneratedContent>
@@ -145,12 +159,14 @@ const GeneratedContent = (props) => {
       {props.generatedText
         .slice(0)
         .reverse()
-        .map((item) => {
+        .map((item, i) => {
           return (
             <div>
-              {console.log(item.generatedContent.data)}
+              <h4>Iteration {props.generatedText.length - i}</h4>
               <strong>{item.prompt}</strong>
-              <p>{parse(item.generatedContent.data.replace(/\n/g, "<br>"))}</p>
+              <p className="white-space-pre-wrap">
+                {item.generatedContent.data}
+              </p>
               <hr />
             </div>
           );

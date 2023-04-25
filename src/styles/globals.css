@@ -19,3 +19,11 @@
 .wrap-anywhere {
   overflow-wrap: anywhere;
 }
+
+.gptResponseContent {
+  padding: 0px 25px;
+}
+
+.white-space-pre-wrap {
+  white-space: pre-wrap;
+}

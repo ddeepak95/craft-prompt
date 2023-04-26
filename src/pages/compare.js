@@ -75,12 +75,12 @@ export default function Compare() {
             <div className="row">
               <div className="col">
                 <p className="gptResponseContent white-space-pre-wrap">
-                  {content[0].generatedContent.data}
+                  {content[dataIndex1].generatedContent.data}
                 </p>
               </div>
               <div className="col">
                 <p className="gptResponseContent white-space-pre-wrap">
-                  {content[1].generatedContent.data}
+                  {content[dataIndex2].generatedContent.data}
                 </p>
               </div>
             </div>

@@ -7,7 +7,7 @@ export const GeneratedContent = (props) => {
         .reverse()
         .map((item, i) => {
           return (
-            <div>
+            <div key={i}>
               <h4>Iteration {props.generatedText.length - i}</h4>
               <strong>{item.prompt}</strong>
               <p className="white-space-pre-wrap">

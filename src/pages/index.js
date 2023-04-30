@@ -1,12 +1,12 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
-import { FixedText } from "./components/FixedText";
-import { VariableText } from "./components/VariableText";
-import { GeneratedContent } from "./components/GeneratedContent";
-import { Loader } from "./components/Loader";
+import { FixedText } from "../components/FixedText";
+import { VariableText } from "../components/VariableText";
+import { GeneratedContent } from "../components/GeneratedContent";
+import { Loader } from "../components/Loader";
 import Swal from "sweetalert2";
-import { Introduction } from "./components/Introduction";
+import { Introduction } from "../components/Introduction";
 
 export default function Home() {
   const [generatedText, setGeneratedText] = useState([]);

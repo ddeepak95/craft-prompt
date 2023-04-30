@@ -1,4 +1,4 @@
-import LoadingIcon from "../../../public/imgs/Loading_icon.gif";
+import LoadingIcon from "../../public/imgs/Loading_icon.gif";
 import Image from "next/image";
 export const Loader = (props) => {
   return (

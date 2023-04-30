@@ -1,3 +1,7 @@
+:root {
+  --primary-color: white;
+}
+
 .prompt-container p span {
   margin: 4px;
 }

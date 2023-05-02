@@ -31,3 +31,18 @@
 .white-space-pre-wrap {
   white-space: pre-wrap;
 }
+
+.variable-text-box-label {
+  position: relative;
+  top: -20px;
+}
+
+.variable-text-box-container {
+  position: absolute;
+}
+
+/* .inputBox::before {
+  content: "hello";
+  position: relative;
+  top: 10px;
+} */

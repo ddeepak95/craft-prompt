@@ -7,17 +7,34 @@ import { GeneratedContent } from "../components/GeneratedContent";
 import { Loader } from "../components/Loader";
 import Swal from "sweetalert2";
 import { Introduction } from "../components/Introduction";
+import { Tooltip } from "react-tooltip";
 
 export default function Home() {
   const [generatedText, setGeneratedText] = useState([]);
   const [loader, setLoader] = useState(false);
 
   async function callOpenAIGPT(prompt) {
-    let openAIResponse = await fetch("/api/openAI", {
-      method: "POST",
-      body: prompt,
-    });
-    return await openAIResponse.json();
+    try {
+      let openAIResponse = await fetch("/api/openAI", {
+        method: "POST",
+        body: prompt,
+      });
+      if (openAIResponse.status !== 200) {
+        throw (
+          data.error ||
+          new Error(`Request failed with status ${response.status}`)
+        );
+      }
+      let openAIResponseData = await openAIResponse.json();
+      return openAIResponseData;
+    } catch (error) {
+      // Consider implementing your own error handling logic here
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message,
+      });
+    }
   }
 
   useEffect(() => {
@@ -132,9 +149,11 @@ export default function Home() {
                   onClick={() => {
                     generateWithAI();
                   }}
+                  disabled={loader ? true : false}
                 >
                   Generate With AI
                 </button>
+                {loader && <Loader />}
               </div>
             </div>
             <div className="col p-0 float-end">
@@ -164,7 +183,6 @@ export default function Home() {
                     </button>
                   </div>
                   <div className="px-4">
-                    {loader && <Loader />}
                     <GeneratedContent
                       generatedText={generatedText}
                     ></GeneratedContent>
@@ -173,10 +191,18 @@ export default function Home() {
               ) : (
                 <>
                   <Introduction />
-                  {loader && <Loader />}
                 </>
               )}
             </div>
+
+            <Tooltip
+              style={{
+                fontSize: "0.8em",
+                position: "fixed",
+              }}
+              id={"tooltip"}
+              clickable={true}
+            />
           </div>
         </div>
       </main>

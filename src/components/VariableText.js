@@ -8,7 +8,7 @@ export const VariableText = (props) => {
       <span
         id="textBox"
         className="inputBox"
-        data-tooltip-id={props.id + "-tooltip"}
+        data-tooltip-id={"tooltip"}
         data-tooltip-content={props.hint}
         tooltip-focussed="no"
         type="textbox"
@@ -24,6 +24,8 @@ export const VariableText = (props) => {
             e.target.style.display = "inline-block";
             e.target.style.lineHeight = null;
           }
+          setOpenTooltip(false);
+          // setOpenTooltip(true);
         }}
         onFocus={(e) => {
           setOpenTooltip(true);
@@ -48,17 +50,6 @@ export const VariableText = (props) => {
           e.target.setAttribute("tooltip-focussed", "no");
         }}
       ></span>
-      <small>
-        <Tooltip
-          isOpen={openTooltip}
-          style={{
-            fontSize: "0.8em",
-            backgroundColor: tooltipFocus ? "black" : "grey",
-          }}
-          id={props.id + "-tooltip"}
-          clickable={true}
-        />
-      </small>
     </>
   );
 };
